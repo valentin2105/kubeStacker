@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-        "github.com/codegangsta/cli"
+  "github.com/codegangsta/cli"
 	)
 
 func Run(command string) {
@@ -22,12 +22,7 @@ func CmdAdd(c *cli.Context) {
 
 
 
-        myvar := "test"
-	Run("echo -n Bienvenue dans mon super script de ")
-	fmt.Printf(myvar)
-	Run("echo  qui envoie du patée")
-
-
-
+  myvar := "test"
+	Run("kubectl get pod")
 
 }
