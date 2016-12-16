@@ -22,7 +22,7 @@ func CmdAdd(c *cli.Context) {
 
 
 
-  myvar := "test"
+  //myvar := "test"
 	Run("kubectl get pod --all-namespaces")
 
 }
