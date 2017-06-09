@@ -7,15 +7,33 @@ import (
 	"github.com/valentin2105/kubeStacker/command"
 )
 
-var GlobalFlags = []cli.Flag{}
+var GlobalFlags = []cli.Flag{
+
+}
+
+var language string
 
 var Commands = []cli.Command{
 	{
 		Name:   "add",
 		Usage:  "",
 		Action: command.CmdAdd,
-		Flags:  []cli.Flag{},
+
+		Flags:  []cli.Flag{
+			cli.StringFlag{
+				Name: "name, n",
+				Value: "default",
+				Usage: "Stack name",
+			},
+			cli.StringFlag{
+				Name: "type, t",
+				Usage: "Stack type (Wordpress, Drupal, PHP...)",
+			},
+		},
 	},
+
+
+
 	{
 		Name:   "show",
 		Usage:  "",

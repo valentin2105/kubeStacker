@@ -8,7 +8,8 @@ import (
   "github.com/codegangsta/cli"
 	)
 
-func Run(command string) {
+
+func RunAdd(command string) {
 	args := strings.Split(command, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Stdout = os.Stdout
@@ -21,6 +22,5 @@ func Run(command string) {
 
 
 func CmdAdd(c *cli.Context) {
-	Run("kubectl get pod --all-namespaces")
-  fmt.Printf(language)
+	RunAdd("echo Lets add a stack...")
 }
