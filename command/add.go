@@ -18,11 +18,9 @@ func Run(command string) {
 		panic(err)
 	}
 }
+
+
 func CmdAdd(c *cli.Context) {
-
-
-
-  //myvar := "test"
 	Run("kubectl get pod --all-namespaces")
-
+  fmt.Printf(language)
 }
