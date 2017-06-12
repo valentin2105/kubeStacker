@@ -4,14 +4,11 @@ import (
 	"fmt"
 	"os"
 	"github.com/codegangsta/cli"
-	"github.com/valentin2105/kubeStacker/command"
+  "github.com/valentin2105/kubeStacker/command"
 )
 
 var GlobalFlags = []cli.Flag{
-
 }
-
-var language string
 
 var Commands = []cli.Command{
 	{
@@ -31,9 +28,6 @@ var Commands = []cli.Command{
 			},
 		},
 	},
-
-
-
 	{
 		Name:   "show",
 		Usage:  "",

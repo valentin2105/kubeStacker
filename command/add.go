@@ -6,8 +6,13 @@ import (
 	"os/exec"
 	"strings"
   "github.com/codegangsta/cli"
-	)
+	flag "github.com/ogier/pflag"
+)
 
+var (
+	stackName string
+	stackType string
+)
 
 func RunAdd(command string) {
 	args := strings.Split(command, " ")
@@ -22,5 +27,15 @@ func RunAdd(command string) {
 
 
 func CmdAdd(c *cli.Context) {
-	RunAdd("echo Lets add a stack...")
+	// parse flags
+	flag.Parse()
+	
+	fmt.Printf("Let's add %s with %s", stackName, stackType)
+
 }
+
+
+func init() {
+  flag.StringVarP(&stackName, "name", "n", "", "Stack Name")
+	flag.StringVarP(&stackType, "type", "t", "", "Stack Type (Wordpress/Drupal...)")
+	}
