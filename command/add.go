@@ -27,10 +27,10 @@ func RunAdd(command string) {
 
 
 func CmdAdd(c *cli.Context) {
-	// parse flags
 	flag.Parse()
-	
-	fmt.Printf("Let's add %s with %s", stackName, stackType)
+
+	fmt.Printf("Let's add %s with %s... \n", stackName, stackType)
+
 
 }
 
@@ -38,4 +38,4 @@ func CmdAdd(c *cli.Context) {
 func init() {
   flag.StringVarP(&stackName, "name", "n", "", "Stack Name")
 	flag.StringVarP(&stackType, "type", "t", "", "Stack Type (Wordpress/Drupal...)")
-	}
+}
