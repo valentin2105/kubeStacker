@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+
 	"github.com/codegangsta/cli"
-  "github.com/valentin2105/kubeStacker/command"
+	"github.com/valentin2105/kubeStacker/command"
 )
 
-var GlobalFlags = []cli.Flag{
-}
+var GlobalFlags = []cli.Flag{}
 
 var Commands = []cli.Command{
 	{
@@ -16,15 +16,20 @@ var Commands = []cli.Command{
 		Usage:  "",
 		Action: command.CmdAdd,
 
-		Flags:  []cli.Flag{
+		Flags: []cli.Flag{
 			cli.StringFlag{
-				Name: "name, n",
+				Name:  "name, n",
 				Value: "default",
 				Usage: "Stack name",
 			},
 			cli.StringFlag{
-				Name: "type, t",
+				Name:  "type, t",
 				Usage: "Stack type (Wordpress, Drupal, PHP...)",
+			},
+
+			cli.IntFlag{
+				Name:  "size, s",
+				Usage: "Stack size (in GB)",
 			},
 		},
 	},

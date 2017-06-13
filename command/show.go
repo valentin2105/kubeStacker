@@ -5,11 +5,13 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-  "github.com/codegangsta/cli"
-	)
+
+	"github.com/codegangsta/cli"
+)
 
 var (
 	checkBin bool
+	Result   string
 )
 
 func RunShow(command string) {
@@ -24,26 +26,27 @@ func RunShow(command string) {
 }
 
 func Exists(name string) bool {
-    _, err := os.Stat(name)
-    return !os.IsNotExist(err)
+	_, err := os.Stat(name)
+	return !os.IsNotExist(err)
 }
 
 func CmdShow(c *cli.Context) {
 
 	if len(os.Args) > 2 {
-	    var ns = os.Args[2]
-	    var readyCmd = fmt.Sprintf("kubectl get deploy,pod,svc,secret,ingress -n %s", ns)
-			checkBin = Exists("/usr/local/bin/kubectl")
-			if checkBin == true{
+		var ns = os.Args[2]
+		var readyCmd = fmt.Sprintf("kubectl get deploy,pod,svc,secret,ingress -n %s", ns)
+		checkBin = Exists("/usr/local/bin/kubectl")
 
-			  RunShow(readyCmd)
+		if checkBin == true {
 
-			} else{
+			RunShow(readyCmd)
+
+		} else {
 			fmt.Printf("Kubectl is not present in /usr/local/bin\n")
-			}
+		}
 
 	} else {
-			fmt.Println("Stack namespace is empty!")
-			os.Exit(1)
+		fmt.Println("Stack namespace is empty!")
+		os.Exit(1)
 	}
 }
