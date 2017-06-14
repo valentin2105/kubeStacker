@@ -143,9 +143,9 @@ func CreateVolume(volumeName string, volumeSize int) {
 		volumeMountPlace := fmt.Sprintf("%s/%s", mountPlace, volumeName)
 		if _, err := os.Stat(volumeMountPlace); os.IsNotExist(err) {
 			os.Mkdir(volumeMountPlace, 0775)
-			if err != nil {
-				panic(err)
-			}
+			//if err != nil {
+			//	panic(err)
+			//}
 		}
 		// add to fstab and mount volume
 
