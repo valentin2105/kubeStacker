@@ -152,10 +152,12 @@ func CreateVolume(volumeName string, volumeSize int) {
 			os.Mkdir(volumeMountPlace, 0775)
 		}
 		// add to fstab and mount volume
-		fstabFile, err := os.Create("/root/fstab")
-		check(err)
-		w := bufio.NewWriter(fstabFile)
-		w.WriteString("buffered\n")
+		fileHandle, _ := os.Create("/root/fstab")
+		writer := bufio.NewWriter(fileHandle)
+		defer fileHandle.Close()
+
+		fmt.Fprintln(writer, "try line")
+		writer.Flush()
 
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
