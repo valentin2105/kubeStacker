@@ -152,7 +152,7 @@ func CreateVolume(volumeName string, volumeSize int) {
 			os.Mkdir(volumeMountPlace, 0775)
 		}
 		// add to fstab and mount volume
-		fileHandle, _ := os.OpenFile("/root/fstab", os.O_APPEND, 0666)
+		fileHandle, _ := os.OpenFile("output.txt", os.O_APPEND, 0644)
 		writer := bufio.NewWriter(fileHandle)
 		defer fileHandle.Close()
 
