@@ -147,6 +147,7 @@ func CreateVolume(volumeName string, volumeSize int) {
 				panic(err)
 			}
 		}
+		// add to fstab and mount volume
 
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
@@ -174,8 +175,4 @@ func CmdAdd(c *cli.Context) {
 	fmt.Printf("\n")
 	CreateVolume(stackMD5, volumeSize)
 
-	for {
-		fmt.Printf("...........\n")
-		Run("sleep 1")
-	}
 }
