@@ -1,10 +1,11 @@
 {
+	"config":
+	{
+	"volumeType": "lvm",
+	"maxVolumeSize": "50",
+	"nginxName": "nginx-ingress"
+	},
 	"wordpress": "helm/wordpress",
 	"drupal": "helm/drupal",
-	"ghost": "helm/ghost",
-        "config":
-        {
-                "tag": "",
-                "vhost": ""
-        }
+	"ghost": "helm/ghost"
 }

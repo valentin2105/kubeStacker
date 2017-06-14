@@ -16,6 +16,9 @@ var (
 
 func CatchEnvKubectl() string {
 	kubectlPath := os.Getenv("KUBECTL_PATH")
+	if kubectlPath == "" {
+		kubectlPath = "/usr/local/bin/kubectl@"
+	}
 	return kubectlPath
 }
 

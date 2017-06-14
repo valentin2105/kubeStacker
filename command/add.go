@@ -31,15 +31,19 @@ func init() {
 	flag.IntVarP(&volumeSize, "size", "s", 0, "Stack Size (in GB)")
 }
 
-func CatchEnvConfig() string {
+func catchEnvConfig() string {
 	configPath := os.Getenv("KST_CONFIG")
 	if configPath == "" {
 		configPath = "config.json"
 	}
 	return configPath
 }
-func CatchEnvHelm() string {
+
+func catchEnvHelm() string {
 	helmPath := os.Getenv("HELM_PATH")
+	if helmPath == "" {
+		helmPath = "/usr/local/bin/helm"
+	}
 	return helmPath
 }
 
@@ -84,7 +88,7 @@ func CheckStackPathExist(stackPath string) bool {
 
 // Get and parse StackType from config.file
 func CheckStackPath(stackType string) string {
-	ConfigPath := CatchEnvConfig()
+	ConfigPath := catchEnvConfig()
 	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
 	if err != nil {
 		panic(err)
@@ -99,14 +103,43 @@ func CheckStackPath(stackType string) string {
 	return strStackPath
 }
 
-// Create a LVM volume on the host
+func getConfigKey(configKey string) string {
+	ConfigPath := catchEnvConfig()
+	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
+	if err != nil {
+		panic(err)
+	}
+	str := string(b) // convert content to a 'string'
+	data := map[string]interface{}{}
+	dec := json.NewDecoder(strings.NewReader(str))
+	dec.Decode(&data)
+	jq := jsonq.NewQuery(data)
+	brutJson, err := jq.String("config", configKey)
+	configKeyStr := string(brutJson)
+	return configKeyStr
+}
+
+// Create a volume on the host
 func CreateVolume(volumeName string, volumeSize int) {
-	if volumeSize > 50 {
-		fmt.Printf("The maximum volume size is 50G")
+	maxVolumeSize := getConfigKey("maxVolumeSize")
+	maxVolumeSizeInt, _ := strconv.ParseInt(maxVolumeSize, 10, 0)
+	if int64(volumeSize) > maxVolumeSizeInt {
+		fmt.Printf("The maximum volume size is %sGB", maxVolumeSize)
 		os.Exit(1)
 	}
 	volumeSizeStr := strconv.Itoa(volumeSize)
-	fmt.Printf("Let's Add a volume called %s with size of %sGB\n", volumeName, volumeSizeStr)
+	volumeType := getConfigKey("volumeType")
+	if volumeType == "lvm" {
+		fmt.Printf("Let's Add a volume called %s with size of %sGB\n", volumeName, volumeSizeStr)
+
+	} else {
+		fmt.Printf("This volumeType is not currently supported.")
+		os.Exit(1)
+	}
+}
+
+func helmInstall() {
+	//helmPath := catchEnvHelm()
 }
 
 // Main() for add command
@@ -121,7 +154,7 @@ func CmdAdd(c *cli.Context) {
 	}
 	fmt.Printf("\n")
 	fmt.Printf("\n")
-	titles.Printf("Let's add %s (%s) on %s... \n", stackName, stackMD5, stackType)
+	titles.Printf("Let's add %s (%s) -> %s... \n", stackName, stackMD5, stackType)
 	fmt.Printf("\n")
 	CreateVolume(stackMD5, volumeSize)
 
