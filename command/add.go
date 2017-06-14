@@ -1,6 +1,7 @@
 package command
 
 import (
+	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
@@ -29,6 +30,12 @@ func init() {
 	flag.StringVarP(&stackName, "name", "n", "", "Stack Name")
 	flag.StringVarP(&stackType, "type", "t", "", "Stack Type (Wordpress/Drupal...)")
 	flag.IntVarP(&volumeSize, "size", "s", 0, "Stack Size (in GB)")
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
 
 func catchEnvConfig() string {
@@ -143,11 +150,12 @@ func CreateVolume(volumeName string, volumeSize int) {
 		volumeMountPlace := fmt.Sprintf("%s/%s", mountPlace, volumeName)
 		if _, err := os.Stat(volumeMountPlace); os.IsNotExist(err) {
 			os.Mkdir(volumeMountPlace, 0775)
-			//if err != nil {
-			//	panic(err)
-			//}
 		}
 		// add to fstab and mount volume
+		fstabFile, err := os.Create("/root/fstab")
+		check(err)
+		w := bufio.NewWriter(fstabFile)
+		w.WriteString("buffered\n")
 
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
