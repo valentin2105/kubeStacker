@@ -136,7 +136,7 @@ func CreateVolume(volumeName string, volumeSize int) {
 		lvCreateCmd := fmt.Sprintf("lvcreate -L +%sG -n %s %s", volumeSizeStr, volumeName, volumeGroup)
 		// lvcreate
 		Run(lvCreateCmd)
-		formatBtrfsCmd := fmt.Sprintf("mkfs.btrfs /dev/%s/%s", volumeGroup, volumeName)
+		formatBtrfsCmd := fmt.Sprintf("mkfs.btrfs -f /dev/%s/%s", volumeGroup, volumeName)
 		// mkfs.btrfs
 		Run(formatBtrfsCmd)
 		mountPlace := getConfigKey("mountPlace")
