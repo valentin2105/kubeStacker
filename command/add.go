@@ -49,12 +49,27 @@ func RunAdd(command string) {
 }
 
 // Check if stack already exist
-func CheckStackExist() {
+func CheckStackExist(stackPath string) bool {
+	checkPath := Exists(stackPath)
+	if checkPath == true {
+		return true
+	} else {
+		return false
+	}
+}
 
+// Check if stackPath exist
+func CheckStackPathExist(stackPath string) bool {
+	checkPath := Exists(stackPath)
+	if checkPath == true {
+		return true
+	} else {
+		return false
+	}
 }
 
 // Get and parse StackType from stacks.json
-func CheckStackPath(stackType string) {
+func CheckStackPath(stackType string) string {
 	b, err := ioutil.ReadFile("stacks.json") // just pass the file name
 	if err != nil {
 		fmt.Print(err)
@@ -64,8 +79,9 @@ func CheckStackPath(stackType string) {
 	dec := json.NewDecoder(strings.NewReader(str))
 	dec.Decode(&data)
 	jq := jsonq.NewQuery(data)
-	fmt.Println(jq.String(stackType))
-
+	brutJson, err := jq.String(stackType)
+	strStackPath := string(brutJson) // convert content to a 'string'
+	return strStackPath
 }
 
 // Create a LVM volume on the host
@@ -78,9 +94,13 @@ func CreateVolume(volumeName string, volumeSize int) {
 func CmdAdd(c *cli.Context) {
 	flag.Parse()
 	stackMD5 := GetMD5Hash(stackName)
+	stackPath := CheckStackPath(stackType)
+	stackPathExist := CheckStackPathExist(stackPath)
+	if stackPathExist == false {
+		panic("The Stack Path (stacks.json) doesn't exist")
+	}
+
 	fmt.Printf("Let's add %s (%s) on %s... \n", stackName, stackMD5, stackType)
 	fmt.Printf("\n")
 	CreateVolume(stackMD5, volumeSize)
-	CheckStackPath(stackType)
-
 }
