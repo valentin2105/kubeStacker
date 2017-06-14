@@ -14,6 +14,11 @@ var (
 	Result   string
 )
 
+func CatchEnvKubectl() string {
+	kubectlPath := os.Getenv("KUBECTL_PATH")
+	return kubectlPath
+}
+
 // Exec shell command
 func RunShow(command string) {
 	args := strings.Split(command, " ")

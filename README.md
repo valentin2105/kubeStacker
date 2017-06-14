@@ -6,6 +6,14 @@
 
 ## Usage
 
+```
+KST_CONFIG='config.json'
+KUBECTL_PATH='/usr/bin/kubectl'
+HELM_PATH='/usr/bin/helm'
+
+./kubeStacker add --name=my.great.site.com  --type=wordpress --size=10G
+```
+
 ## Install
 
 To install, use `go get`:

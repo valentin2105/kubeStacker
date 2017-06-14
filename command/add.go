@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
+	"github.com/fatih/color"
 	"github.com/jmoiron/jsonq"
 	flag "github.com/ogier/pflag"
 )
@@ -19,6 +20,7 @@ import (
 var (
 	stackName  string
 	stackType  string
+	configPath string
 	volumeSize int
 )
 
@@ -29,6 +31,18 @@ func init() {
 	flag.IntVarP(&volumeSize, "size", "s", 0, "Stack Size (in GB)")
 }
 
+func CatchEnvConfig() string {
+	configPath := os.Getenv("KST_CONFIG")
+	if configPath == "" {
+		configPath = "config.json"
+	}
+	return configPath
+}
+func CatchEnvHelm() string {
+	helmPath := os.Getenv("HELM_PATH")
+	return helmPath
+}
+
 // Get MD5 from a string (stackName)
 func GetMD5Hash(text string) string {
 	hasher := md5.New()
@@ -37,7 +51,7 @@ func GetMD5Hash(text string) string {
 }
 
 // Exec shell command
-func RunAdd(command string) {
+func Run(command string) {
 	args := strings.Split(command, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Stdout = os.Stdout
@@ -68,11 +82,12 @@ func CheckStackPathExist(stackPath string) bool {
 	}
 }
 
-// Get and parse StackType from stacks.json
+// Get and parse StackType from config.file
 func CheckStackPath(stackType string) string {
-	b, err := ioutil.ReadFile("stacks.json") // just pass the file name
+	ConfigPath := CatchEnvConfig()
+	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
 	if err != nil {
-		fmt.Print(err)
+		panic(err)
 	}
 	str := string(b) // convert content to a 'string'
 	data := map[string]interface{}{}
@@ -80,12 +95,16 @@ func CheckStackPath(stackType string) string {
 	dec.Decode(&data)
 	jq := jsonq.NewQuery(data)
 	brutJson, err := jq.String(stackType)
-	strStackPath := string(brutJson) // convert content to a 'string'
+	strStackPath := string(brutJson)
 	return strStackPath
 }
 
 // Create a LVM volume on the host
 func CreateVolume(volumeName string, volumeSize int) {
+	if volumeSize > 50 {
+		fmt.Printf("The maximum volume size is 50G")
+		os.Exit(1)
+	}
 	volumeSizeStr := strconv.Itoa(volumeSize)
 	fmt.Printf("Let's Add a volume called %s with size of %sGB\n", volumeName, volumeSizeStr)
 }
@@ -93,14 +112,21 @@ func CreateVolume(volumeName string, volumeSize int) {
 // Main() for add command
 func CmdAdd(c *cli.Context) {
 	flag.Parse()
+	titles := color.New(color.FgWhite, color.Bold)
 	stackMD5 := GetMD5Hash(stackName)
 	stackPath := CheckStackPath(stackType)
 	stackPathExist := CheckStackPathExist(stackPath)
 	if stackPathExist == false {
-		panic("The Stack Path (stacks.json) doesn't exist")
+		panic("The Stack folder from config.json doesn't exist")
 	}
-
-	fmt.Printf("Let's add %s (%s) on %s... \n", stackName, stackMD5, stackType)
+	fmt.Printf("\n")
+	fmt.Printf("\n")
+	titles.Printf("Let's add %s (%s) on %s... \n", stackName, stackMD5, stackType)
 	fmt.Printf("\n")
 	CreateVolume(stackMD5, volumeSize)
+
+	for {
+		fmt.Printf("...........\n")
+		Run("sleep 1")
+	}
 }
