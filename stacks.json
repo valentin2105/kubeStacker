@@ -1,0 +1,10 @@
+{
+	"wordpress": "helm/wordpress",
+	"drupal": "helm/drupal",
+	"ghost": "helm/ghost",
+        "config":
+        {
+                "tag": "",
+                "vhost": ""
+        }
+}

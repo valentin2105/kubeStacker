@@ -14,6 +14,7 @@ var (
 	Result   string
 )
 
+// Exec shell command
 func RunShow(command string) {
 	args := strings.Split(command, " ")
 	cmd := exec.Command(args[0], args[1:]...)
@@ -25,20 +26,23 @@ func RunShow(command string) {
 	}
 }
 
+// Check if a file exist
 func Exists(name string) bool {
 	_, err := os.Stat(name)
 	return !os.IsNotExist(err)
 }
 
+// Main() funct for Show
 func CmdShow(c *cli.Context) {
 
 	if len(os.Args) > 2 {
-		var ns = os.Args[2]
-		var readyCmd = fmt.Sprintf("kubectl get deploy,pod,svc,secret,ingress -n %s", ns)
+		var stackName = os.Args[2]
+		stackMD5 := GetMD5Hash(stackName)
+		var readyCmd = fmt.Sprintf("kubectl get deploy,pod,svc,secret,ingress -n %s", stackMD5)
 		checkBin = Exists("/usr/local/bin/kubectl")
 
 		if checkBin == true {
-
+			fmt.Printf("Let's show %s (%s)\n", stackName, stackMD5)
 			RunShow(readyCmd)
 
 		} else {
