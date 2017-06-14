@@ -132,6 +132,22 @@ func CreateVolume(volumeName string, volumeSize int) {
 	if volumeType == "lvm" {
 		fmt.Printf("Let's Add a volume called %s with size of %sGB\n", volumeName, volumeSizeStr)
 
+		volumeGroup := getConfigKey("volumeGroup")
+		lvCreateCmd := fmt.Sprintf("lvcreate -L +%sG -n %s %s", volumeSizeStr, volumeName, volumeGroup)
+		// lvcreate
+		Run(lvCreateCmd)
+		formatBtrfsCmd := fmt.Sprintf("mkfs.btrfs /dev/%s/%s", volumeGroup, volumeName)
+		// mkfs.btrfs
+		Run(formatBtrfsCmd)
+		mountPlace := getConfigKey("mountPlace")
+		volumeMountPlace := fmt.Sprintf("%s/%s", mountPlace, volumeName)
+		if _, err := os.Stat(volumeMountPlace); os.IsNotExist(err) {
+			os.Mkdir(volumeMountPlace, 0775)
+			if err != nil {
+				panic(err)
+			}
+		}
+
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
 		os.Exit(1)

@@ -1,9 +1,11 @@
 {
 	"config":
 	{
-	"volumeType": "lvm",
-	"maxVolumeSize": "50",
-	"nginxName": "nginx-ingress"
+		"volumeType": "lvm",
+		"maxVolumeSize": "50",
+		"nginxName": "nginx-ingress",
+		"mountPlace": "/mnt/k8s",
+		"volumeGroup": "vgcit1"
 	},
 	"wordpress": "helm/wordpress",
 	"drupal": "helm/drupal",
