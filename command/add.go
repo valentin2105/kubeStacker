@@ -88,10 +88,7 @@ func createVolume(volumeName string, volumeSize int) {
 
 func parseHelmTemplate(from string, to string) {
 	t, err := template.ParseFiles(from)
-	if err != nil {
-		log.Print(err)
-		return
-	}
+	Check(err)
 	f, err := os.Create(to)
 	if err != nil {
 		log.Println("create file: ", err)
@@ -108,10 +105,7 @@ func parseHelmTemplate(from string, to string) {
 		"volumePath": volumeMountPlace,
 	}
 	err = t.Execute(f, config)
-	if err != nil {
-		log.Print("execute: ", err)
-		return
-	}
+	Check(err)
 	f.Close()
 }
 
