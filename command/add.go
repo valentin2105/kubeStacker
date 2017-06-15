@@ -154,13 +154,13 @@ func CmdAdd(c *cli.Context) {
 	fmt.Printf("\n")
 	// Call volume creation
 	createVolume(stackMD5, volumeSize)
-	// Parse & Copy Helm Template
+	// Copy & Parse Helm Template
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	helmValueTmplPath := fmt.Sprintf("%s/values.tmpl.yaml", thisDeployPath)
 	helmValuePath := fmt.Sprintf("%s/values.yaml", thisDeployPath)
-	parseHelmTemplate(helmValueTmplPath, helmValuePath)
 	copyHelmTemplate(stackPath)
+	parseHelmTemplate(helmValueTmplPath, helmValuePath)
 	// Create k8s namespace
 	createNamespace(stackMD5)
 	// Install Helm generated package
