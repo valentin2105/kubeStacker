@@ -141,7 +141,7 @@ func CmdAdd(c *cli.Context) {
 	// Call volume creation
 	createVolume(stackMD5, volumeSize)
 	// Parse Helm Template
-	helmValueTmplPath := fmt.Sprintf("%s/values.yaml.tmpl", stackPath)
+	helmValueTmplPath := fmt.Sprintf("%s/values.tmpl.yaml", stackPath)
 	helmValuePath := fmt.Sprintf("%s/values.yaml", stackPath)
 	parseHelmTemplate(helmValueTmplPath, helmValuePath)
 	// Install Helm generated package
