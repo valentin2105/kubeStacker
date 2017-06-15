@@ -1,7 +1,6 @@
 package command
 
 import (
-	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
@@ -110,6 +109,21 @@ func CheckStackPath(stackType string) string {
 	return strStackPath
 }
 
+// Write to a file func
+func AppendStringToFile(path, text string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(text)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func getConfigKey(configKey string) string {
 	ConfigPath := catchEnvConfig()
 	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
@@ -152,11 +166,9 @@ func CreateVolume(volumeName string, volumeSize int) {
 			os.Mkdir(volumeMountPlace, 0775)
 		}
 		// add to fstab and mount volume
-		fileHandle, _ := os.OpenFile("output.txt", os.O_APPEND, 0644)
-		writer := bufio.NewWriter(fileHandle)
-		//defer fileHandle.Close()
-		fmt.Fprintln(writer, "String I want to append")
-		writer.Flush()
+		fstabCmd, _ := fmt.Printf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0       1", volumeGroup, volumeName, mountPlace, volumeName)
+		fmt.Println(fstabCmd)
+		//AppendStringToFile("/root/fstab", fstabCmd)
 
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
