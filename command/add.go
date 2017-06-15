@@ -154,8 +154,7 @@ func CreateVolume(volumeName string, volumeSize int) {
 		// add to fstab and mount volume
 		fileHandle, _ := os.OpenFile("output.txt", os.O_APPEND, 0644)
 		writer := bufio.NewWriter(fileHandle)
-		defer fileHandle.Close()
-
+		//defer fileHandle.Close()
 		fmt.Fprintln(writer, "String I want to append")
 		writer.Flush()
 
