@@ -166,9 +166,11 @@ func CreateVolume(volumeName string, volumeSize int) {
 			os.Mkdir(volumeMountPlace, 0775)
 		}
 		// add to fstab and mount volume
-		fstabCmd, _ := fmt.Printf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0       1", volumeGroup, volumeName, mountPlace, volumeName)
-		fmt.Println(fstabCmd)
-		//AppendStringToFile("/root/fstab", fstabCmd)
+		fstabCmd, _ := fmt.Printf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0		1", volumeGroup, volumeName, mountPlace, volumeName)
+		//fmt.Println(fstabCmd)
+		fstabCmdStr := strconv.Itoa(fstabCmd)
+
+		AppendStringToFile("/root/fstab", fstabCmdStr)
 
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
