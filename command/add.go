@@ -86,10 +86,6 @@ func createVolume(volumeName string, volumeSize int) {
 	}
 }
 
-func helmInstall() {
-	//helmPath := CatchEnvHelm()
-}
-
 func parseHelmTemplate(from string, to string) {
 	t, err := template.ParseFiles(from)
 	if err != nil {
@@ -103,10 +99,13 @@ func parseHelmTemplate(from string, to string) {
 	}
 	// Helm template config
 	stackMD5 := GetMD5Hash(stackName)
+	mountPlace := getConfigKey("mountPlace")
+	volumeMountPlace := fmt.Sprintf("%s/%s", mountPlace, stackMD5)
 	config := map[string]string{
 		"siteURL":    stackName,
 		"siteMD5":    stackMD5,
 		"rootPasswd": "12345",
+		"volumePath": volumeMountPlace,
 	}
 	err = t.Execute(f, config)
 	if err != nil {
@@ -114,6 +113,12 @@ func parseHelmTemplate(from string, to string) {
 		return
 	}
 	f.Close()
+}
+
+func helmInstall(stackPath string) {
+	helmPath := CatchEnvHelm()
+	helmInitCMD := fmt.Sprintf("cd %s && %s install --name %s", stackPath, helmPath, stackName)
+	fmt.Printf(helmInitCMD)
 }
 
 // Main() for add command
@@ -132,10 +137,12 @@ func CmdAdd(c *cli.Context) {
 	titles.Printf("Let's add a %s for %s (%s) \n", stackType, stackName, stackMD5)
 	fmt.Printf("\n")
 	// Call volume creation
-	////createVolume(stackMD5, volumeSize)
+	createVolume(stackMD5, volumeSize)
 	// Parse Helm Template
-	valueTmplPath := fmt.Sprintf("%s/values.yaml.tmpl", stackPath)
-	valuePath := fmt.Sprintf("%s/values.yaml", stackPath)
-	parseHelmTemplate(valueTmplPath, valuePath)
+	helmValueTmplPath := fmt.Sprintf("%s/values.yaml.tmpl", stackPath)
+	helmValuePath := fmt.Sprintf("%s/values.yaml", stackPath)
+	parseHelmTemplate(helmValueTmplPath, helmValuePath)
+	// Install Helm generated package
+	helmInstall(stackPath)
 
 }
