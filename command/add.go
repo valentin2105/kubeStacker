@@ -86,6 +86,21 @@ func createVolume(volumeName string, volumeSize int) {
 	}
 }
 
+func copyHelmTemplate(stackPath string) {
+	deployTmplPath := getConfigKey("deployTmplPath")
+	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
+	err := Copy_folder(stackPath, thisDeployPath)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		titles := color.New(color.FgWhite, color.Bold)
+		fmt.Printf("\n")
+		titles.Printf("Helm configuration copied to %s \n", thisDeployPath)
+		fmt.Print("copy finish")
+	}
+
+}
+
 func parseHelmTemplate(from string, to string) {
 	t, err := template.ParseFiles(from)
 	Check(err)
@@ -114,12 +129,6 @@ func helmInstall(stackPath string) {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	helmInitCMD := fmt.Sprintf("%s install --name %s %s", helmPath, stackName, thisDeployPath)
-	err := Copy_folder(stackPath, thisDeployPath)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Print("copy finish")
-	}
 	fmt.Printf(helmInitCMD)
 }
 
@@ -140,10 +149,13 @@ func CmdAdd(c *cli.Context) {
 	fmt.Printf("\n")
 	// Call volume creation
 	createVolume(stackMD5, volumeSize)
-	// Parse Helm Template
-	helmValueTmplPath := fmt.Sprintf("%s/values.tmpl.yaml", stackPath)
-	helmValuePath := fmt.Sprintf("%s/values.yaml", stackPath)
+	// Parse & Copy Helm Template
+	deployTmplPath := getConfigKey("deployTmplPath")
+	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
+	helmValueTmplPath := fmt.Sprintf("%s/values.tmpl.yaml", thisDeployPath)
+	helmValuePath := fmt.Sprintf("%s/values.yaml", thisDeployPath)
 	parseHelmTemplate(helmValueTmplPath, helmValuePath)
+	copyHelmTemplate(stackPath)
 	// Install Helm generated package
 	helmInstall(stackPath)
 
