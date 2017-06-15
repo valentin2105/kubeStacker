@@ -62,7 +62,6 @@ func createVolume(volumeName string, volumeSize int) {
 	volumeType := getConfigKey("volumeType")
 	if volumeType == "lvm" {
 		fmt.Printf("Let's Add a volume called %s with size of %sGB\n", volumeName, volumeSizeStr)
-
 		volumeGroup := getConfigKey("volumeGroup")
 		lvCreateCmd := fmt.Sprintf("lvcreate -L +%sG -n %s %s", volumeSizeStr, volumeName, volumeGroup)
 		// lvcreate
@@ -79,7 +78,6 @@ func createVolume(volumeName string, volumeSize int) {
 		fstabCmd := fmt.Sprintf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1\n", volumeGroup, volumeName, mountPlace, volumeName)
 		AppendStringToFile("/etc/fstab", fstabCmd)
 		Run("mount -a")
-
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
 		os.Exit(1)
