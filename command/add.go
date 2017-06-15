@@ -78,7 +78,7 @@ func createVolume(volumeName string, volumeSize int) {
 		// add to fstab and mount volume
 		fstabCmd := fmt.Sprintf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1\n", volumeGroup, volumeName, mountPlace, volumeName)
 		AppendStringToFile("/etc/fstab", fstabCmd)
-		//Run("mount -a")
+		Run("mount -a")
 
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
