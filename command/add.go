@@ -1,13 +1,10 @@
 package command
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 
@@ -31,12 +28,6 @@ func init() {
 	flag.IntVarP(&volumeSize, "size", "s", 0, "Stack Size (in GB)")
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func catchEnvConfig() string {
 	configPath := os.Getenv("KST_CONFIG")
 	if configPath == "" {
@@ -45,91 +36,10 @@ func catchEnvConfig() string {
 	return configPath
 }
 
-func catchEnvHelm() string {
-	helmPath := os.Getenv("HELM_PATH")
-	if helmPath == "" {
-		helmPath = "/usr/local/bin/helm"
-	}
-	return helmPath
-}
-
-// Get MD5 from a string (stackName)
-func GetMD5Hash(text string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-
-// Exec shell command
-func Run(command string) {
-	args := strings.Split(command, " ")
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("command failed: %s\n", command)
-		panic(err)
-	}
-}
-
-// Check if stack already exist
-func CheckStackExist(stackPath string) bool {
-	checkPath := Exists(stackPath)
-	if checkPath == true {
-		return true
-	} else {
-		return false
-	}
-}
-
-// Check if stackPath exist
-func CheckStackPathExist(stackPath string) bool {
-	checkPath := Exists(stackPath)
-	if checkPath == true {
-		return true
-	} else {
-		return false
-	}
-}
-
-// Get and parse StackType from config.file
-func CheckStackPath(stackType string) string {
-	ConfigPath := catchEnvConfig()
-	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
-	if err != nil {
-		panic(err)
-	}
-	str := string(b) // convert content to a 'string'
-	data := map[string]interface{}{}
-	dec := json.NewDecoder(strings.NewReader(str))
-	dec.Decode(&data)
-	jq := jsonq.NewQuery(data)
-	brutJson, err := jq.String(stackType)
-	strStackPath := string(brutJson)
-	return strStackPath
-}
-
-// Write to a file func
-func AppendStringToFile(path, text string) error {
-	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	_, err = f.WriteString(text)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func getConfigKey(configKey string) string {
 	ConfigPath := catchEnvConfig()
 	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
-	if err != nil {
-		panic(err)
-	}
+	Check(err)
 	str := string(b) // convert content to a 'string'
 	data := map[string]interface{}{}
 	dec := json.NewDecoder(strings.NewReader(str))
@@ -141,7 +51,7 @@ func getConfigKey(configKey string) string {
 }
 
 // Create a volume on the host
-func CreateVolume(volumeName string, volumeSize int) {
+func createVolume(volumeName string, volumeSize int) {
 	maxVolumeSize := getConfigKey("maxVolumeSize")
 	maxVolumeSizeInt, _ := strconv.ParseInt(maxVolumeSize, 10, 0)
 	if int64(volumeSize) > maxVolumeSizeInt {
@@ -166,7 +76,7 @@ func CreateVolume(volumeName string, volumeSize int) {
 			os.Mkdir(volumeMountPlace, 0775)
 		}
 		// add to fstab and mount volume
-		fstabCmd := fmt.Sprintln("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1\n", volumeGroup, volumeName, mountPlace, volumeName)
+		fstabCmd := fmt.Sprintf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1\n", volumeGroup, volumeName, mountPlace, volumeName)
 		AppendStringToFile("/etc/fstab", fstabCmd)
 		//Run("mount -a")
 
@@ -177,7 +87,7 @@ func CreateVolume(volumeName string, volumeSize int) {
 }
 
 func helmInstall() {
-	//helmPath := catchEnvHelm()
+	//helmPath := CatchEnvHelm()
 }
 
 // Main() for add command
@@ -194,6 +104,6 @@ func CmdAdd(c *cli.Context) {
 	fmt.Printf("\n")
 	titles.Printf("Let's add %s (%s) -> %s... \n", stackName, stackMD5, stackType)
 	fmt.Printf("\n")
-	CreateVolume(stackMD5, volumeSize)
+	createVolume(stackMD5, volumeSize)
 
 }
