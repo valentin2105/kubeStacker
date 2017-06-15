@@ -3,7 +3,9 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -88,6 +90,32 @@ func helmInstall() {
 	//helmPath := CatchEnvHelm()
 }
 
+func parseHelmTemplate(from string, to string) {
+	t, err := template.ParseFiles(from)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	f, err := os.Create(to)
+	if err != nil {
+		log.Println("create file: ", err)
+		return
+	}
+	// Helm template config
+	stackMD5 := GetMD5Hash(stackName)
+	config := map[string]string{
+		"siteURL":    stackName,
+		"siteMD5":    stackMD5,
+		"rootPasswd": "12345",
+	}
+	err = t.Execute(f, config)
+	if err != nil {
+		log.Print("execute: ", err)
+		return
+	}
+	f.Close()
+}
+
 // Main() for add command
 func CmdAdd(c *cli.Context) {
 	flag.Parse()
@@ -98,10 +126,16 @@ func CmdAdd(c *cli.Context) {
 	if stackPathExist == false {
 		panic("The Stack folder from config.json doesn't exist")
 	}
+	//Start Output
 	fmt.Printf("\n")
 	fmt.Printf("\n")
-	titles.Printf("Let's add %s (%s) -> %s... \n", stackName, stackMD5, stackType)
+	titles.Printf("Let's add a %s for %s (%s) \n", stackType, stackName, stackMD5)
 	fmt.Printf("\n")
-	createVolume(stackMD5, volumeSize)
+	// Call volume creation
+	////createVolume(stackMD5, volumeSize)
+	// Parse Helm Template
+	valueTmplPath := fmt.Sprintf("%s/values.yaml.tmpl", stackPath)
+	valuePath := fmt.Sprintf("%s/values.yaml", stackPath)
+	parseHelmTemplate(valueTmplPath, valuePath)
 
 }
