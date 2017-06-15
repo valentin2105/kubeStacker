@@ -5,7 +5,8 @@
 		"maxVolumeSize": "50",
 		"nginxName": "nginx-ingress",
 		"mountPlace": "/mnt/k8s",
-		"volumeGroup": "vgcit1"
+		"volumeGroup": "vgcit1",
+		"deployTmplPath": "/home/stacks"
 	},
 	"wordpress": "helm/wordpress",
 	"drupal": "helm/drupal",

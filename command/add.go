@@ -117,7 +117,9 @@ func parseHelmTemplate(from string, to string) {
 
 func helmInstall(stackPath string) {
 	helmPath := CatchEnvHelm()
-	helmInitCMD := fmt.Sprintf("cd %s && %s install --name %s", stackPath, helmPath, stackName)
+	deployTmplPath := getConfigKey("deployTmplPath")
+	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
+	helmInitCMD := fmt.Sprintf("%s install --name %s %s", helmPath, stackName, thisDeployPath)
 	fmt.Printf(helmInitCMD)
 }
 
