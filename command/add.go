@@ -114,6 +114,12 @@ func helmInstall(stackPath string) {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	helmInitCMD := fmt.Sprintf("%s install --name %s %s", helmPath, stackName, thisDeployPath)
+	err := Copy_folder(stackPath, thisDeployPath)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Print("copy finish")
+	}
 	fmt.Printf(helmInitCMD)
 }
 
