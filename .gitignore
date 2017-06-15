@@ -1,2 +1,3 @@
 *.test
 kubeStacker
+helm/
