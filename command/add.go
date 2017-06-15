@@ -96,7 +96,6 @@ func copyHelmTemplate(stackPath string) {
 		titles := color.New(color.FgWhite, color.Bold)
 		fmt.Printf("\n")
 		titles.Printf("Helm configuration copied to %s \n", thisDeployPath)
-		fmt.Print("copy finish")
 	}
 
 }
@@ -129,7 +128,13 @@ func helmInstall(stackPath string) {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	helmInitCMD := fmt.Sprintf("%s install --name %s %s", helmPath, stackName, thisDeployPath)
-	fmt.Printf(helmInitCMD)
+	//fmt.Printf(helmInitCMD)
+	Run(helmInitCMD)
+}
+
+func createNamespace(stackMD5 string) {
+	createNsCmd := fmt.Sprintf("kubectl create ns %s", stackMD5)
+	Run(createNsCmd)
 }
 
 // Main() for add command
@@ -156,6 +161,8 @@ func CmdAdd(c *cli.Context) {
 	helmValuePath := fmt.Sprintf("%s/values.yaml", thisDeployPath)
 	parseHelmTemplate(helmValueTmplPath, helmValuePath)
 	copyHelmTemplate(stackPath)
+	// Create k8s namespace
+	createNamespace(stackMD5)
 	// Install Helm generated package
 	helmInstall(stackPath)
 
