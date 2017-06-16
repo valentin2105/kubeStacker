@@ -117,7 +117,7 @@ func parseHelmTemplate(from string, to string) {
 	config := map[string]string{
 		"siteURL":       stackName,
 		"siteMD5":       stackMD5,
-		"rootPasswd":    "12345",
+		"rootPasswd":    "aBigStr0ngPassw0rd",
 		"volumePathDB":  volumeMountPlaceDB,
 		"volumePathWeb": volumeMountPlaceWeb,
 	}
