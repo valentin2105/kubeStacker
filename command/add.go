@@ -114,10 +114,11 @@ func parseHelmTemplate(from string, to string) {
 	volumeMountPlace := fmt.Sprintf("%s/%s", mountPlace, stackMD5)
 	volumeMountPlaceDB := fmt.Sprintf("%s/db", volumeMountPlace)
 	volumeMountPlaceWeb := fmt.Sprintf("%s/web", volumeMountPlace)
+	stackPasswd := "aBigStr0ngPassw0rd"
 	config := map[string]string{
 		"siteURL":       stackName,
 		"siteMD5":       stackMD5,
-		"rootPasswd":    "aBigStr0ngPassw0rd",
+		"rootPassword":  stackPasswd,
 		"volumePathDB":  volumeMountPlaceDB,
 		"volumePathWeb": volumeMountPlaceWeb,
 	}
