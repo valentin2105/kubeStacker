@@ -133,7 +133,6 @@ func helmInstall(chartPath string) {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	helmInitCMD := fmt.Sprintf("%s install --name %s %s", helmPath, stackName, thisDeployPath)
-	//fmt.Printf(helmInitCMD)
 	Run(helmInitCMD)
 }
 

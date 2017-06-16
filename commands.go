@@ -19,14 +19,13 @@ var Commands = []cli.Command{
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "name, n",
-				Value: "default",
+				Value: "",
 				Usage: "Stack name",
 			},
 			cli.StringFlag{
 				Name:  "type, t",
 				Usage: "Stack type (Wordpress, Drupal, PHP...)",
 			},
-
 			cli.IntFlag{
 				Name:  "size, s",
 				Usage: "Stack size (in GB)",
@@ -44,6 +43,11 @@ var Commands = []cli.Command{
 		Usage:  "",
 		Action: command.CmdDelete,
 		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "name, n",
+				Value: "",
+				Usage: "Stack name",
+			},
 			cli.BoolFlag{
 				Name:  "all, a",
 				Usage: "Delete stack and volume",
