@@ -183,21 +183,13 @@ func Copy_file(source string, dest string) (err error) {
 
 // Notify Hipchat room (value from config.json)
 func HipchatNotify(message string) bool {
-	c := hipchat.NewClient("<your AuthToken here>")
-
-	opt := &hipchat.RoomsListOptions{IncludePrivate: true, IncludeArchived: true}
-	rooms, _, err := c.Room.List(opt)
+	room := getConfigKey("hipchatRoom")
+	token := getConfigKey("hipchatToken")
+	c := hipchat.NewClient(token)
+	notifRq := &hipchat.NotificationRequest{Message: "Hey there!"}
+	_, err := c.Room.Notification(room, notifRq)
 	if err != nil {
 		panic(err)
-	}
-
-	notifRq := &hipchat.NotificationRequest{Message: "Hey there!"}
-
-	for _, room := range rooms.Items {
-		_, err := c.Room.Notification(room.Name, notifRq)
-		if err != nil {
-			panic(err)
-		}
 	}
 	return true
 }
