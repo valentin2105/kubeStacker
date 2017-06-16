@@ -29,8 +29,6 @@ func deleteStackAll() {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	deleteDeployPath := fmt.Sprintf("rm -r %s", thisDeployPath)
-	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
-	s.Start()                                                    // Start the spinner
 	Run(deleteDeployPath)
 	// umount the Volume
 	mountPlace := getConfigKey("mountPlace")
@@ -48,7 +46,6 @@ func deleteStackAll() {
 	cleanFstabCMD := fmt.Sprintf("sed -i 's,/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1,,g' /etc/fstab", volumeGroup, stackMD5, mountPlace, stackMD5)
 	// Run(cleanFstabCMD)
 	exec.Command("sh", "-c", cleanFstabCMD).Output()
-	s.Stop()
 }
 
 func CmdDelete(c *cli.Context) {
@@ -56,6 +53,8 @@ func CmdDelete(c *cli.Context) {
 	if stackName == "" {
 		panic("You need to give stack name (--name=)")
 	}
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
+	s.Start()                                                    // Start the spinner
 	deleteStack()
 	if isDeleteAll == true {
 		deleteStackAll()
@@ -64,5 +63,5 @@ func CmdDelete(c *cli.Context) {
 	// Notify Hipchat about the creation
 	hipchatMessage := fmt.Sprintf("https://%s is Deleted !\n", stackName)
 	HipchatNotify(hipchatMessage)
-
+	s.Stop()
 }
