@@ -171,6 +171,6 @@ func CmdAdd(c *cli.Context) {
 	createNamespace(stackMD5)
 	// Install Helm generated package
 	helmInstall(stackPath)
-	fmt.Printf("\n")
 	titles.Printf("https://%s is correctly deployed !\n", stackName)
+	fmt.Printf("\n")
 }

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
+	"github.com/fatih/color"
 )
 
 var (
@@ -45,13 +46,16 @@ func CmdShow(c *cli.Context) {
 
 	if len(os.Args) > 2 {
 		var stackName = os.Args[2]
+		titles := color.New(color.FgWhite, color.Bold)
 		stackMD5 := GetMD5Hash(stackName)
 		var readyCmd = fmt.Sprintf("kubectl get deploy,pod,svc,secret,ingress -n %s", stackMD5)
 		kubectlPath := fmt.Sprintf(CatchEnvKubectl())
 		checkBin = Exists(kubectlPath)
 
 		if checkBin == true {
-			fmt.Printf("Let's show %s (%s)\n", stackName, stackMD5)
+			fmt.Printf("\n")
+			titles.Printf("Let's show %s (%s)\n", stackName, stackMD5)
+			fmt.Printf("\n")
 			RunShow(readyCmd)
 
 		} else {
