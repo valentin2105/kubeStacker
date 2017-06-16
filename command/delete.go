@@ -32,12 +32,14 @@ func deleteStackAll() {
 	mountPlace := getConfigKey("mountPlace")
 	stackMD5 := GetMD5Hash(stackName)
 	umountStackVolume := fmt.Sprintf("umount %s/%s", mountPlace, stackMD5)
-	Run(umountStackVolume)
+	//Run(umountStackVolume)
+	exec.Command("sh", "-c", umountStackVolume).Output()
 	Run("sleep 5")
 	// Delete Logical Volume
 	volumeGroup := getConfigKey("volumeGroup")
 	removeLV := fmt.Sprintf("lvremove -f /dev/%s/%s", volumeGroup, stackMD5)
-	Run(removeLV)
+	//Run(removeLV)
+	exec.Command("sh", "-c", removeLV).Output()
 	// Append fstab line
 	cleanFstabCMD := fmt.Sprintf("sed -i 's,/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1,,g' /etc/fstab", volumeGroup, stackMD5, mountPlace, stackMD5)
 	Run(cleanFstabCMD)
