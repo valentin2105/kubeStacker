@@ -147,7 +147,6 @@ func createNamespace(stackMD5 string) {
 // Main() for add command
 func CmdAdd(c *cli.Context) {
 	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
-	s.Start()                                                    // Start the spinner
 	flag.Parse()
 	titles := color.New(color.FgWhite, color.Bold)
 	stackMD5 := GetMD5Hash(stackName)
@@ -167,6 +166,7 @@ func CmdAdd(c *cli.Context) {
 	fmt.Printf("\n")
 	titles.Printf("Let's add a %s for %s (%s) \n", stackType, stackName, stackMD5)
 	fmt.Printf("\n")
+	s.Start() // Start the spinner
 	// Call volume creation
 	createVolume(stackMD5, volumeSize)
 	// Copy & Parse Helm Template
