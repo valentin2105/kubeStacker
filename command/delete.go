@@ -31,7 +31,7 @@ func deleteStackAll() {
 	// umount the Volume
 	mountPlace := getConfigKey("mountPlace")
 	stackMD5 := GetMD5Hash(stackName)
-	umountStackVolume := fmt.Sprintf("umount %s/%s", mountPlace, stackMD5)
+	umountStackVolume := fmt.Sprintf("umount %s/%s && sleep 3", mountPlace, stackMD5)
 	Run(umountStackVolume)
 	// Delete Logical Volume
 	volumeGroup := getConfigKey("volumeGroup")
