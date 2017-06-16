@@ -3,4 +3,5 @@ github.com/codegangsta/cli =
 github.com/fatih/color = 
 github.com/jmoiron/jsonq = 
 github.com/ogier/pflag = 
+github.com/tbruyelle/hipchat-go = 
 
