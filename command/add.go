@@ -10,7 +10,9 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/codegangsta/cli"
 	"github.com/fatih/color"
 	"github.com/jmoiron/jsonq"
@@ -68,10 +70,10 @@ func createVolume(volumeName string, volumeSize int) {
 		volumeGroup := getConfigKey("volumeGroup")
 		lvCreateCmd := fmt.Sprintf("lvcreate -L +%sG -n %s %s", volumeSizeStr, volumeName, volumeGroup)
 		// lvcreate
-		Run(lvCreateCmd)
+		RunMute(lvCreateCmd)
 		formatBtrfsCmd := fmt.Sprintf("mkfs.btrfs -f /dev/%s/%s", volumeGroup, volumeName)
 		// mkfs.btrfs
-		Run(formatBtrfsCmd)
+		RunMute(formatBtrfsCmd)
 		mountPlace := getConfigKey("mountPlace")
 		volumeMountPlace := fmt.Sprintf("%s/%s", mountPlace, volumeName)
 		if _, err := os.Stat(volumeMountPlace); os.IsNotExist(err) {
@@ -80,7 +82,7 @@ func createVolume(volumeName string, volumeSize int) {
 		// add to fstab and mount volume
 		fstabCmd := fmt.Sprintf("/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1\n", volumeGroup, volumeName, mountPlace, volumeName)
 		AppendStringToFile("/etc/fstab", fstabCmd)
-		Run("mount -a")
+		RunMute("mount -a")
 	} else {
 		fmt.Printf("This volumeType is not currently supported.")
 		os.Exit(1)
@@ -144,6 +146,8 @@ func createNamespace(stackMD5 string) {
 
 // Main() for add command
 func CmdAdd(c *cli.Context) {
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
+	s.Start()                                                    // Start the spinner
 	flag.Parse()
 	titles := color.New(color.FgWhite, color.Bold)
 	stackMD5 := GetMD5Hash(stackName)
@@ -178,4 +182,5 @@ func CmdAdd(c *cli.Context) {
 	// Notify Hipchat about the creation
 	hipchatMessage := fmt.Sprintf("https://%s is correctly deployed !\n", stackName)
 	HipchatNotify(hipchatMessage)
+	s.Stop()
 }

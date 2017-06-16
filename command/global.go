@@ -34,6 +34,18 @@ func Run(command string) {
 	}
 }
 
+// Exec shell command muted
+func RunMute(command string) {
+	args := strings.Split(command, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+	//cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("command failed: %s\n", command)
+		panic(err)
+	}
+}
+
 // Write to a file func
 func AppendStringToFile(path, text string) error {
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
