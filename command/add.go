@@ -139,15 +139,7 @@ func helmInstall(stackPath string) {
 
 func createNamespace(stackMD5 string) {
 	createNsCmd := fmt.Sprintf("/usr/bin/kubectl create ns %s", stackMD5)
-
-	//output, err := exec.Command(createNsCmd).CombinedOutput()
-	output, err := exec.Command("sh", "-c", createNsCmd).Output()
-
-	if err != nil {
-		os.Stderr.WriteString(err.Error())
-	}
-	fmt.Println(string(output))
-
+	exec.Command("sh", "-c", createNsCmd).Output()
 	//Run(createNsCmd)
 }
 
@@ -179,5 +171,6 @@ func CmdAdd(c *cli.Context) {
 	createNamespace(stackMD5)
 	// Install Helm generated package
 	helmInstall(stackPath)
-
+	fmt.Printf("\n")
+	titles.Printf("https://%s is correctly deployed !\n", stackName)
 }
