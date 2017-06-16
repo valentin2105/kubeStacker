@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/codegangsta/cli"
 	flag "github.com/ogier/pflag"
@@ -20,7 +21,7 @@ func init() {
 func deleteStack() {
 	helmPath := CatchEnvHelm()
 	helmDeleteCMD := fmt.Sprintf("%s delete --purge %s ", helmPath, stackName)
-	Run(helmDeleteCMD)
+	exec.Command("sh", "-c", helmDeleteCMD).Output()
 }
 
 func deleteStackAll() {
