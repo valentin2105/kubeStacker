@@ -3,7 +3,9 @@ package command
 import (
 	"fmt"
 	"os/exec"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/codegangsta/cli"
 	flag "github.com/ogier/pflag"
 )
@@ -34,7 +36,12 @@ func deleteStackAll() {
 	umountStackVolume := fmt.Sprintf("umount %s/%s", mountPlace, stackMD5)
 	//Run(umountStackVolume)
 	exec.Command("sh", "-c", umountStackVolume).Output()
-	Run("sleep 15")
+
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
+	s.Start()                                                    // Start the spinner
+	time.Sleep(15 * time.Second)                                 // Run for some time to simulate work
+	s.Stop()
+	//Run("sleep 15")
 	// Delete Logical Volume
 	volumeGroup := getConfigKey("volumeGroup")
 	removeLV := fmt.Sprintf("lvremove -f /dev/%s/%s", volumeGroup, stackMD5)
