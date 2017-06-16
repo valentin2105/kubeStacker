@@ -12,8 +12,8 @@ var (
 )
 
 func init() {
-	flag.BoolVarP(&isDeleteAll, "all", "a", false, "Delete completly the stack and volumes")
 	flag.StringVarP(&stackName, "name", "n", "", "Stack Name")
+	flag.BoolVarP(&isDeleteAll, "all", "a", false, "Delete completly the stack and volumes")
 }
 
 func deleteStack() {
@@ -38,6 +38,9 @@ func deleteStackAll() {
 
 func CmdDelete(c *cli.Context) {
 	flag.Parse()
+	if stackName == "" {
+		panic("You need to give stack name (--name=)")
+	}
 	deleteStack()
 	if isDeleteAll == true {
 		deleteStackAll()

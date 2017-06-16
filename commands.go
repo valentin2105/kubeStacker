@@ -15,7 +15,6 @@ var Commands = []cli.Command{
 		Name:   "add",
 		Usage:  "",
 		Action: command.CmdAdd,
-
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "name, n",
