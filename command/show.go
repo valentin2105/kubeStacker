@@ -51,16 +51,14 @@ func CmdShow(c *cli.Context) {
 		var readyCmd = fmt.Sprintf("kubectl get deploy,pod,svc,secret,ingress -n %s", stackMD5)
 		kubectlPath := fmt.Sprintf(CatchEnvKubectl())
 		checkBin = Exists(kubectlPath)
-
-		if checkBin == true {
-			fmt.Printf("\n")
-			titles.Printf("Let's show %s (%s)\n", stackName, stackMD5)
-			fmt.Printf("\n")
-			RunShow(readyCmd)
-
-		} else {
+		if checkBin == false {
 			fmt.Printf("Kubectl is not present at %s \n", kubectlPath)
+			os.Exit(1)
 		}
+		fmt.Printf("\n")
+		titles.Printf("Let's show %s (%s)\n", stackName, stackMD5)
+		fmt.Printf("\n")
+		RunShow(readyCmd)
 
 	} else {
 		fmt.Println("Stack namespace is empty!")

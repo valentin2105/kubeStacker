@@ -108,6 +108,13 @@ func GetMD5Hash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+// Get String from a MD5 (stackMD5)
+func GetStrFromMD5(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
 func Copy_folder(source string, dest string) (err error) {
 
 	sourceinfo, err := os.Stat(source)
