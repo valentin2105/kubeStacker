@@ -95,12 +95,7 @@ func copyHelmTemplate(chartPath string) {
 	err := Copy_folder(chartPath, thisDeployPath)
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		titles := color.New(color.FgWhite, color.Bold)
-		fmt.Printf("\n")
-		titles.Printf("Helm configuration copied to %s \n", thisDeployPath)
 	}
-
 }
 
 func parseHelmTemplate(from string, to string) {
@@ -177,8 +172,10 @@ func CmdAdd(c *cli.Context) {
 	// Create k8s namespace
 	createNamespace(stackMD5)
 	// Install Helm generated package
+	s.Stop()
 	helmInstall(chartPath)
 	titles.Printf("https://%s is correctly deployed !\n", stackName)
+	s.Start() // Start the spinner
 	// Notify Hipchat about the creation
 	hipchatMessage := fmt.Sprintf("https://%s is correctly deployed !\n", stackName)
 	HipchatNotify(hipchatMessage)
