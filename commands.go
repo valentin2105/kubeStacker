@@ -43,7 +43,12 @@ var Commands = []cli.Command{
 		Name:   "delete",
 		Usage:  "",
 		Action: command.CmdDelete,
-		Flags:  []cli.Flag{},
+		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "all, a",
+				Usage: "Delete stack and volume",
+			},
+		},
 	},
 }
 
