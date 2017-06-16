@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 
@@ -138,7 +139,14 @@ func helmInstall(stackPath string) {
 
 func createNamespace(stackMD5 string) {
 	createNsCmd := fmt.Sprintf("kubectl create ns %s", stackMD5)
-	Run(createNsCmd)
+
+	output, err := exec.Command(createNsCmd).CombinedOutput()
+	if err != nil {
+		os.Stderr.WriteString(err.Error())
+	}
+	fmt.Println(string(output))
+
+	//Run(createNsCmd)
 }
 
 // Main() for add command
