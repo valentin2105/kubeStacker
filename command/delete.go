@@ -29,6 +29,8 @@ func deleteStackAll() {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	deleteDeployPath := fmt.Sprintf("rm -r %s", thisDeployPath)
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
+	s.Start()                                                    // Start the spinner
 	Run(deleteDeployPath)
 	// umount the Volume
 	mountPlace := getConfigKey("mountPlace")
@@ -36,12 +38,7 @@ func deleteStackAll() {
 	umountStackVolume := fmt.Sprintf("umount %s/%s", mountPlace, stackMD5)
 	//Run(umountStackVolume)
 	exec.Command("sh", "-c", umountStackVolume).Output()
-
-	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond) // Build our new spinner
-	s.Start()                                                    // Start the spinner
-	time.Sleep(15 * time.Second)                                 // Run for some time to simulate work
-	s.Stop()
-	//Run("sleep 15")
+	time.Sleep(15 * time.Second)
 	// Delete Logical Volume
 	volumeGroup := getConfigKey("volumeGroup")
 	removeLV := fmt.Sprintf("lvremove -f /dev/%s/%s", volumeGroup, stackMD5)
@@ -51,6 +48,7 @@ func deleteStackAll() {
 	cleanFstabCMD := fmt.Sprintf("sed -i 's,/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1,,g' /etc/fstab", volumeGroup, stackMD5, mountPlace, stackMD5)
 	// Run(cleanFstabCMD)
 	exec.Command("sh", "-c", cleanFstabCMD).Output()
+	s.Stop()
 }
 
 func CmdDelete(c *cli.Context) {
