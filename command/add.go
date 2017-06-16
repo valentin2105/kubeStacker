@@ -175,7 +175,6 @@ func CmdAdd(c *cli.Context) {
 	// Install Helm generated package
 	helmInstall(chartPath)
 	titles.Printf("https://%s is correctly deployed !\n", stackName)
-	fmt.Printf("\n")
 	// Notify Hipchat about the creation
-	HipchatNotify("the site is correctly created")
+	HipchatNotify("https://%s is correctly deployed !\n", stackName)
 }
