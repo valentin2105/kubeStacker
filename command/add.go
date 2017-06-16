@@ -87,10 +87,10 @@ func createVolume(volumeName string, volumeSize int) {
 	}
 }
 
-func copyHelmTemplate(stackPath string) {
+func copyHelmTemplate(chartPath string) {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
-	err := Copy_folder(stackPath, thisDeployPath)
+	err := Copy_folder(chartPath, thisDeployPath)
 	if err != nil {
 		log.Fatal(err)
 	} else {
@@ -128,7 +128,7 @@ func parseHelmTemplate(from string, to string) {
 	f.Close()
 }
 
-func helmInstall(stackPath string) {
+func helmInstall(chartPath string) {
 	helmPath := CatchEnvHelm()
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
@@ -148,10 +148,16 @@ func CmdAdd(c *cli.Context) {
 	flag.Parse()
 	titles := color.New(color.FgWhite, color.Bold)
 	stackMD5 := GetMD5Hash(stackName)
-	stackPath := CheckStackPath(stackType)
-	stackPathExist := CheckStackPathExist(stackPath)
-	if stackPathExist == false {
-		panic("The Stack folder from config.json doesn't exist")
+	chartPath := CheckChartPath(stackType)
+	chartPathExist := CheckChartPathExist(chartPath)
+	if chartPathExist == false {
+		panic("The Chart folder from config.json doesn't exist")
+	}
+	deployTmplPath := getConfigKey("deployTmplPath")
+	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
+	deployPathExist := CheckStackExist(thisDeployPath)
+	if deployPathExist == true {
+		panic("The stack is already deployed.")
 	}
 	//Start Output
 	fmt.Printf("\n")
@@ -161,16 +167,14 @@ func CmdAdd(c *cli.Context) {
 	// Call volume creation
 	createVolume(stackMD5, volumeSize)
 	// Copy & Parse Helm Template
-	deployTmplPath := getConfigKey("deployTmplPath")
-	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
 	helmValueTmplPath := fmt.Sprintf("%s/values.tmpl.yaml", thisDeployPath)
 	helmValuePath := fmt.Sprintf("%s/values.yaml", thisDeployPath)
-	copyHelmTemplate(stackPath)
+	copyHelmTemplate(chartPath)
 	parseHelmTemplate(helmValueTmplPath, helmValuePath)
 	// Create k8s namespace
 	createNamespace(stackMD5)
 	// Install Helm generated package
-	helmInstall(stackPath)
+	helmInstall(chartPath)
 	titles.Printf("https://%s is correctly deployed !\n", stackName)
 	fmt.Printf("\n")
 }

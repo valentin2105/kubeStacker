@@ -48,8 +48,8 @@ func AppendStringToFile(path, text string) error {
 }
 
 // Check if stack already exist
-func CheckStackExist(stackPath string) bool {
-	checkPath := Exists(stackPath)
+func CheckChartExist(chartPath string) bool {
+	checkPath := Exists(chartPath)
 	if checkPath == true {
 		return true
 	} else {
@@ -57,9 +57,9 @@ func CheckStackExist(stackPath string) bool {
 	}
 }
 
-// Check if stackPath exist
-func CheckStackPathExist(stackPath string) bool {
-	checkPath := Exists(stackPath)
+// Check if chartPath exist
+func CheckChartPathExist(chartPath string) bool {
+	checkPath := Exists(chartPath)
 	if checkPath == true {
 		return true
 	} else {
@@ -67,8 +67,8 @@ func CheckStackPathExist(stackPath string) bool {
 	}
 }
 
-// Get and parse StackType from config.file
-func CheckStackPath(stackType string) string {
+// Get and parse ChartType from config.file
+func CheckChartPath(stackType string) string {
 	ConfigPath := catchEnvConfig()
 	b, err := ioutil.ReadFile(ConfigPath) // just pass the file name
 	Check(err)
@@ -78,8 +78,18 @@ func CheckStackPath(stackType string) string {
 	dec.Decode(&data)
 	jq := jsonq.NewQuery(data)
 	brutJson, err := jq.String(stackType)
-	strStackPath := string(brutJson)
-	return strStackPath
+	strChartPath := string(brutJson)
+	return strChartPath
+}
+
+// Check if stack already exist
+func CheckStackExist(stackPath string) bool {
+	checkPath := Exists(stackPath)
+	if checkPath == true {
+		return true
+	} else {
+		return false
+	}
 }
 
 // Catch Helm Path from env
