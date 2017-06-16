@@ -44,8 +44,8 @@ var Commands = []cli.Command{
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "name, n",
-				Value: "",
-				Usage: "Stack name",
+				Value: "default",
+				Usage: "Stack name to delete",
 			},
 			cli.BoolFlag{
 				Name:  "all, a",

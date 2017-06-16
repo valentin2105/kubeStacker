@@ -9,10 +9,11 @@ import (
 
 var (
 	isDeleteAll bool
+	//stackName   string
 )
 
 func init() {
-	flag.StringVarP(&stackName, "name", "n", "", "Stack Name")
+	//flag.StringVarP(&stackName, "name", "n", "", "Stack Name to Delete")
 	flag.BoolVarP(&isDeleteAll, "all", "a", false, "Delete completly the stack and volumes")
 }
 
