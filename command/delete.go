@@ -42,7 +42,8 @@ func deleteStackAll() {
 	exec.Command("sh", "-c", removeLV).Output()
 	// Append fstab line
 	cleanFstabCMD := fmt.Sprintf("sed -i 's,/dev/mapper/%s-%s	%s/%s               btrfs    defaults 0  1,,g' /etc/fstab", volumeGroup, stackMD5, mountPlace, stackMD5)
-	Run(cleanFstabCMD)
+	// Run(cleanFstabCMD)
+	exec.Command("sh", "-c", cleanFstabCMD).Output()
 }
 
 func CmdDelete(c *cli.Context) {
