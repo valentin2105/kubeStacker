@@ -6,8 +6,8 @@
 		"nginxName": "nginx-ingress",
 		"mountPlace": "/mnt/k8s",
 		"volumeGroup": "vgcit1",
-		"deployTmplPath": "/home/stacks"
-		"hipchatToken": "123"
+		"deployTmplPath": "/home/stacks",
+		"hipchatToken": "123",
 		"hipchatRoom": "#k8s"
 	},
 	"wordpress": "helm/wordpress",
