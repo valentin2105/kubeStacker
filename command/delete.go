@@ -27,7 +27,7 @@ func deleteStack() {
 func deleteStackAll() {
 	deployTmplPath := getConfigKey("deployTmplPath")
 	thisDeployPath := fmt.Sprintf("%s/%s", deployTmplPath, stackName)
-	deleteDeployPath := fmt.Sprintf("rm -r %", thisDeployPath)
+	deleteDeployPath := fmt.Sprintf("rm -r %%", thisDeployPath)
 	Run(deleteDeployPath)
 	mountPlace := getConfigKey("mountPlace")
 	stackMD5 := GetMD5Hash(stackName)
