@@ -56,4 +56,8 @@ func CmdDelete(c *cli.Context) {
 		deleteStackAll()
 	}
 
+	// Notify Hipchat about the creation
+	hipchatMessage := fmt.Sprintf("https://%s is Deleted !\n", stackName)
+	HipchatNotify(hipchatMessage)
+
 }
