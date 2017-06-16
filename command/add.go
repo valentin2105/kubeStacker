@@ -138,9 +138,11 @@ func helmInstall(stackPath string) {
 }
 
 func createNamespace(stackMD5 string) {
-	createNsCmd := fmt.Sprintf("kubectl create ns %s", stackMD5)
+	createNsCmd := fmt.Sprintf("/usr/bin/kubectl create ns %s", stackMD5)
 
-	output, err := exec.Command(createNsCmd).CombinedOutput()
+	//output, err := exec.Command(createNsCmd).CombinedOutput()
+	output, err := exec.Command("sh", "-c", createNsCmd).Output()
+
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 	}
