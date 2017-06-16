@@ -66,7 +66,6 @@ func createVolume(volumeName string, volumeSize int) {
 	volumeSizeStr := strconv.Itoa(volumeSize)
 	volumeType := getConfigKey("volumeType")
 	if volumeType == "lvm" {
-		fmt.Printf("Let's Add a volume called %s with size of %sGB\n", volumeName, volumeSizeStr)
 		volumeGroup := getConfigKey("volumeGroup")
 		lvCreateCmd := fmt.Sprintf("lvcreate -L +%sG -n %s %s", volumeSizeStr, volumeName, volumeGroup)
 		// lvcreate
@@ -158,9 +157,7 @@ func CmdAdd(c *cli.Context) {
 	}
 	//Start Output
 	fmt.Printf("\n")
-	fmt.Printf("\n")
 	titles.Printf("Let's add a %s for %s (%s) \n", stackType, stackName, stackMD5)
-	fmt.Printf("\n")
 	s.Start() // Start the spinner
 	// Call volume creation
 	createVolume(stackMD5, volumeSize)
