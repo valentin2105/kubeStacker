@@ -15,7 +15,7 @@ var (
 )
 
 func init() {
-	flag.BoolVarP(&isDeleteAll, "all", "a", false, "Delete completly the stack and volumes")
+	flag.BoolVarP(&isDeleteAll, "all", "a", false, "Delete completly stack and volumes")
 }
 
 func deleteStack() {
@@ -61,7 +61,7 @@ func CmdDelete(c *cli.Context) {
 	}
 
 	// Notify Hipchat about the creation
-	hipchatMessage := fmt.Sprintf("https://%s is Deleted !\n", stackName)
+	hipchatMessage := fmt.Sprintf("https://%s deleted !\n", stackName)
 	HipchatNotify(hipchatMessage)
 	s.Stop()
 }

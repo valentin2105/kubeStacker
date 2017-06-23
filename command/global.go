@@ -129,27 +129,19 @@ func GetStrFromMD5(text string) string {
 }
 
 func Copy_folder(source string, dest string) (err error) {
-
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err
 	}
-
 	err = os.MkdirAll(dest, sourceinfo.Mode())
 	if err != nil {
 		return err
 	}
-
 	directory, _ := os.Open(source)
-
 	objects, err := directory.Readdir(-1)
-
 	for _, obj := range objects {
-
 		sourcefilepointer := source + "/" + obj.Name()
-
 		destinationfilepointer := dest + "/" + obj.Name()
-
 		if obj.IsDir() {
 			err = Copy_folder(sourcefilepointer, destinationfilepointer)
 			if err != nil {
@@ -161,7 +153,6 @@ func Copy_folder(source string, dest string) (err error) {
 				fmt.Println(err)
 			}
 		}
-
 	}
 	return
 }
@@ -171,25 +162,19 @@ func Copy_file(source string, dest string) (err error) {
 	if err != nil {
 		return err
 	}
-
 	defer sourcefile.Close()
-
 	destfile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-
 	defer destfile.Close()
-
 	_, err = io.Copy(destfile, sourcefile)
 	if err == nil {
 		sourceinfo, err := os.Stat(source)
 		if err != nil {
 			err = os.Chmod(dest, sourceinfo.Mode())
 		}
-
 	}
-
 	return
 }
 
